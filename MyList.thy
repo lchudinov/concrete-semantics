@@ -48,11 +48,21 @@ value "1 - (2::nat)"
 value "1 - (2::int)"
 
 (* Exercise 2.3 *)
-(*
+
 fun count :: "'a \<Rightarrow> 'a list \<Rightarrow> nat" where
 "count x Nil = 0" |
-"count x (Cons x xs) = if (x  x0) then 1 + (count x xs)" else count x xs"
-*)
+"count x (Cons x0 xs) = (count x xs) + (if x = x0 then 1 else 0)"
+
+value "count 1 (Cons 1 (Cons (1::nat) Nil))"
+
+fun length :: "'a list \<Rightarrow> nat" where
+"length Nil = 0" |
+"length (Cons x xs) = 1 + length xs"
+
+theorem count_leq_len : "count x xs \<le> length xs"
+  apply (induction xs)
+  apply (auto)
+  done
 
 end
 
