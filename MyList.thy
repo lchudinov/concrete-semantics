@@ -64,5 +64,25 @@ theorem count_leq_len : "count x xs \<le> length xs"
   apply (auto)
   done
 
+(* Exercise 2.4 *)
+
+fun snoc :: "'a list \<Rightarrow> 'a \<Rightarrow> 'a list" where
+"snoc Nil x = Cons x Nil" |
+"snoc (Cons x0 xs) x = Cons x0 (snoc xs x)"
+
+fun reverse :: "'a list \<Rightarrow> 'a list" where
+"reverse Nil = Nil" |
+"reverse (Cons x xs) = snoc (reverse xs) x"
+
+lemma reverse_snoc [simp] : "reverse (snoc xs x) = Cons x (reverse xs)"
+  apply (induction xs)
+  apply (auto)
+  done
+
+theorem reverse_correct [simp] : "reverse (reverse xs) = xs"
+  apply (induction xs)
+  apply (auto)
+  done
+
 end
 
