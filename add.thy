@@ -50,6 +50,6 @@ value "sum_upto 5"
 theorem sum_upto_n : "sum_upto n = n * (n + 1) div 2"
   apply (induction n)
   apply (auto)
-  end
+  done
 
 end
