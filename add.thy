@@ -39,4 +39,17 @@ theorem double_correct [simp] : "double m = add m m"
   apply (auto)
   done
 
+(* Exercise 2.5 *)
+
+fun sum_upto :: "nat \<Rightarrow> nat" where
+"sum_upto 0 = 0" |
+"sum_upto (Suc n) = n + 1 + sum_upto n"
+
+value "sum_upto 5"
+
+theorem sum_upto_n : "sum_upto n = n * (n + 1) div 2"
+  apply (induction n)
+  apply (auto)
+  end
+
 end
