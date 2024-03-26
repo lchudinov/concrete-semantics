@@ -4,6 +4,8 @@ theory Datatypes
   imports Main
 begin
 
+declare [[names_short]]
+
 datatype 'a tree = Tip | Node "'a tree" 'a "'a tree"
 
 fun mirror :: "'a tree \<Rightarrow> 'a tree" where
@@ -20,5 +22,30 @@ datatype 'a option = None | Some 'a
 fun lookup :: "('a * 'b) list \<Rightarrow> 'a \<Rightarrow> 'b option" where
 "lookup [] x = None" |
 "lookup ((a, b) # ps) x = (if a = x then Some b else lookup ps x)"
+
+(* Exercise 2.6. *)
+
+fun contents :: "'a tree \<Rightarrow> 'a list" where
+"contents Tip = []" |
+"contents (Node l a r) = a # (contents l) @ (contents r)"
+
+fun sum_tree :: "nat tree \<Rightarrow> nat" where
+"sum_tree Tip = 0" |
+"sum_tree (Node l a r) = a + (sum_tree l) + (sum_tree r)"
+
+fun sum_list :: "nat list \<Rightarrow> nat" where
+"sum_list [] = 0" |
+"sum_list (x # xs) = x + sum_list xs"
+
+lemma [simp]: "sum_list t1 + sum_list t2 = sum_list (t1 @ t2)"
+  apply (induction t1)
+  apply (auto)
+  done
+
+lemma "sum_tree t = sum_list (contents t)"
+  apply (induction t)
+  apply (auto)
+  done
+
 
 end
