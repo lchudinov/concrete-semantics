@@ -62,4 +62,15 @@ lemma "pre_order (mirror t) = rev (post_order t)"
   apply (auto)
   done
 
+(* Exercise 2.8. *)
+fun intersperse :: "'a \<Rightarrow> 'a list \<Rightarrow> 'a list" where
+"intersperse a [] = []" |
+"intersperse a [x] = [x]" |
+"intersperse a (x # xs) = x # a # (intersperse a xs)"
+
+lemma "map f (intersperse a xs) = intersperse (f a) (map f xs)"
+  apply (induction xs rule: intersperse.induct)
+  apply (auto)
+  done
+
 end
