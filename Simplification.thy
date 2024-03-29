@@ -68,17 +68,17 @@ fun coeffs :: "exp \<Rightarrow> int list" where
 
 value "coeffs (Add (Mult (Const 3) (Const 1)) (Mult (Const 2) Var))"
 
-lemma evalp_additive [simp]: "evalp (add_coeffs xs ys) x = evalp xs x + evalp ys x"
+lemma evalp_additive [simp] : "evalp (add_coeffs xs ys) x = evalp xs x + evalp ys x"
   apply (induction rule: add_coeffs.induct)
   apply (auto simp add: algebra_simps)
   done
 
-lemma evalp_coeff [simp]: "evalp (mult_coeff c xs) x = c * evalp xs x"
+lemma evalp_mult_coeff [simp] : "evalp (mult_coeff c xs) x = c * evalp xs x"
   apply (induction xs)
   apply (auto simp add:algebra_simps)
   done
 
-lemma evalp_multiplicative [simp]: "evalp (mult_coeffs xs ys) x = (evalp xs x) * (evalp ys x)"
+lemma evalp_multiplicative [simp] : "evalp (mult_coeffs xs ys) x = (evalp xs x) * (evalp ys x)"
   apply (induction xs)
   apply (auto simp add: algebra_simps)
   done
