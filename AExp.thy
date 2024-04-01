@@ -51,11 +51,36 @@ lemma "aval (asimp a) s = aval a s"
 (* Exercise 3.1. *)
 
 fun optimal :: "aexp \<Rightarrow> bool" where
-"optimal (N n) = true" |
-"optimal (V x) = true" |
+"optimal (N n) = True" |
+"optimal (V x) = True" |
 "optimal (Plus a1 a2) = 
   (case (optimal a1, optimal a2) of
-    (true, true) \<Rightarrow> true |
-    (b1, b2) \<Rightarrow> false)"
-  
+    (True, True) \<Rightarrow> True |
+    (b1, b2) \<Rightarrow> False)"
+
+lemma "optimal (asimp_const a)"
+  apply (induction a)
+  apply (auto split: aexp.split)
+  done
+
+(* Exercise 3.2. *)
+
+fun sum_const :: "aexp \<Rightarrow>  int" where
+"sum_const (N n) = n" |
+"sum_const (V x) = 0" |
+"sum_const (Plus a1 a2) = sum_const a1 + sum_const a2"
+
+fun zero_const :: "aexp \<Rightarrow> aexp" where
+"zero_const (N n) = (N 0)" |
+"zero_const (V x) = (V x)" |
+"zero_const (Plus a1 a2) = (Plus (zero_const a1) (zero_const a2))"
+
+fun full_asimp :: "aexp => aexp" where
+"full_asimp a = asimp (Plus (N (sum_const a)) (zero_const a))"
+
+lemma "aval (full_asimp a) s = aval a s"
+  apply (induction a)
+  apply (auto simp add: aval_plus)
+  done
+
 end
