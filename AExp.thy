@@ -46,6 +46,16 @@ fun asimp :: "aexp \<Rightarrow> aexp" where
 lemma "aval (asimp a) s = aval a s"
   apply (induction a)
   apply (auto simp add: aval_plus)
-  done 
+  done
+
+(* Exercise 3.1. *)
+
+fun optimal :: "aexp \<Rightarrow> bool" where
+"optimal (N n) = true" |
+"optimal (V x) = true" |
+"optimal (Plus a1 a2) = 
+  (case (optimal a1, optimal a2) of
+    (true, true) \<Rightarrow> true |
+    (b1, b2) \<Rightarrow> false)"
   
 end
