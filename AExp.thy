@@ -83,4 +83,21 @@ lemma "aval (full_asimp a) s = aval a s"
   apply (auto simp add: aval_plus)
   done
 
+(* Exercise 3.3. *)
+fun subst :: "vname \<Rightarrow> aexp \<Rightarrow> aexp \<Rightarrow> aexp" where
+"subst x a (N n) = (N n)" |
+"subst x a (V v) = (if x = v then a else (V v))" |
+"subst x a (Plus a1 a2) = (Plus (subst x a a1) (subst x a a2))"
+
+value "subst ''x'' (N 3) (Plus (V ''x'') (V ''y''))"
+
+lemma subst_lemma: "aval (subst x a e) s = aval e (s(x := aval a s))"
+  apply (induction e)
+  apply (auto simp add: aval_plus)
+  done
+
+lemma "aval a1 s = aval a2 s \<Longrightarrow> aval (subst x a1 e) s = aval (subst x a2 e) s"
+  apply (induction a1)
+  apply (auto simp add: subst_lemma)
+  done
 end
