@@ -100,4 +100,57 @@ lemma "aval a1 s = aval a2 s \<Longrightarrow> aval (subst x a1 e) s = aval (sub
   apply (induction a1)
   apply (auto simp add: subst_lemma)
   done
+
+(* Exercise 3.4. in file AExp3.4 *)
+
+(* Exercise 3.5. *)
+datatype aexp2 = N2 int | V2 vname | Plus2 aexp2 aexp2 | Inc2 vname
+
+fun aval2 :: "aexp2 \<Rightarrow> state \<Rightarrow> (val \<times> state)" where
+"aval2 (N2 n) s =  (n, s)" |
+"aval2 (V2 x) s = (s x, s)" |
+"aval2 (Inc2 x) s = (s x, s(x := s x + 1))" |
+"aval2 (Plus2 a1 a2) s = (case aval2 a1 s of
+                         (n1, s1) \<Rightarrow> (case aval2 a2 s1 of
+                                     (n2, s2) \<Rightarrow> (n1 + n2, s2)))"
+
+datatype aexp3 = N3 int | V3 vname | Plus3 aexp3 aexp3 | Inc3 vname | Div3 aexp3 aexp3
+
+fun aval3 :: "aexp3 \<Rightarrow> state \<Rightarrow> (val \<times> state) option" where
+"aval3 (N3 n) s =  Some (n, s)" |
+"aval3 (V3 x) s = Some (s x, s)" |
+"aval3 (Inc3 x) s = Some (s x, s(x := s x + 1))" |
+"aval3 (Plus3 a1 a2) s = (case aval3 a1 s of
+                         Some (n1, s1) \<Rightarrow> (case aval3 a2 s1 of
+                                          Some (n2, s2) \<Rightarrow> Some (n1 + n2, s2) |
+                                          None \<Rightarrow> None)|
+                         None \<Rightarrow> None)" |
+"aval3 (Div3 a1 a2) s = (case aval3 a1 s of
+                         Some (n1, s1) \<Rightarrow> (case aval3 a2 s1 of
+                                          Some (n2, s2) \<Rightarrow> (if n2 = 0 then None else Some (n1 div n2, s2)) |
+                                          None \<Rightarrow> None)|
+                         None \<Rightarrow> None)"
+
+value "aval3 (Div3 (N3 6) (N3 3)) (\<lambda>x. 0)"
+
+(* Exercise 3.6. *)
+datatype lexp = Nl int | Vl vname | Plusl lexp lexp | LET vname lexp lexp
+
+fun lval :: "lexp \<Rightarrow> state \<Rightarrow> int" where
+"lval (Nl n) s =  n" |
+"lval (Vl x) s = s x" |
+"lval (Plusl a1 a2) s = lval a1 s + lval a2 s" |
+"lval (LET x e1 e2) s = lval e2 (s(x := lval e1 s))"
+
+fun inline :: "lexp \<Rightarrow> aexp" where
+"inline (Nl n) = N n" |
+"inline (Vl x) = V x" |
+"inline (Plusl a1 a2) = Plus (inline a1) (inline a2)" |
+"inline (LET x e1 e2) = subst x (inline e1) (inline e2)"
+
+lemma "lval l s = aval (inline l) s"
+  apply (induction l arbitrary: s rule: inline.induct)
+  apply (auto simp add: subst_lemma)
+  done
+
 end
