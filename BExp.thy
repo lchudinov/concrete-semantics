@@ -93,5 +93,89 @@ lemma if2bexp_correct : "ifval b s = bval (if2bexp b) s"
 (* Exercise 3.9 *)
 datatype pbexp = VAR vname | NEG pbexp | AND pbexp pbexp | OR pbexp pbexp
 
+fun pbval :: "pbexp \<Rightarrow> (vname \<Rightarrow> bool) \<Rightarrow> bool" where
+"pbval (VAR x) s = s x" |
+"pbval (NEG b) s = (\<not> pbval b s)" |
+"pbval (AND b1 b2) s = (pbval b1 s \<and> pbval b2 s)" |
+"pbval (OR b1 b2) s = (pbval b1 s \<or> pbval b2 s)"
+
+fun is_nnf :: "pbexp \<Rightarrow> bool" where
+"is_nnf (VAR x) = True" |
+"is_nnf (NEG (VAR x)) = True" |
+"is_nnf (NEG b) = False" |
+"is_nnf (AND b1 b2) = (is_nnf b1 \<and> is_nnf b2)" |
+"is_nnf (OR b1 b2) = (is_nnf b1 \<and> is_nnf b2)"
+
+fun nnf :: "pbexp \<Rightarrow> pbexp" where
+"nnf (NEG (VAR x)) = (NEG (VAR x))" |
+"nnf (NEG (NEG b)) = nnf b" |
+"nnf (NEG (AND b1 b2)) = (OR (nnf (NEG b1)) (nnf (NEG b2)))" |
+"nnf (NEG (OR b1 b2)) = (AND (nnf (NEG b1)) (nnf (NEG b2)))" |
+"nnf (VAR x) = (VAR x)" |
+"nnf (AND b1 b2) = (AND (nnf b1) (nnf b2))" | 
+"nnf (OR b1 b2) = (OR (nnf b1) (nnf b2))"
+
+lemma "pbval (nnf b) s = pbval b s"
+  apply (induction b rule: nnf.induct)
+  apply (auto)
+  done
+
+lemma "pbval (nnf b) s = pbval b s"
+  apply (induction b rule: nnf.induct)
+  apply (auto)
+  done
+
+lemma "is_nnf (nnf b)"
+  apply (induction b rule: nnf.induct)
+  apply (auto)
+  done
+
+fun andb :: "pbexp \<Rightarrow> pbexp \<Rightarrow> pbexp" where
+"andb b1 (OR b2 b3) = OR (andb b1 b2) (andb b1 b3)" |
+"andb (OR b1 b2) b3 = OR (andb b1 b3) (andb b2 b3)" |
+"andb b1 b2 = AND b1 b2"
+
+fun dnf_of_nnf :: "pbexp \<Rightarrow> pbexp" where
+"dnf_of_nnf (VAR x) = (VAR x)" |
+"dnf_of_nnf (NEG b) = (NEG b)" |
+"dnf_of_nnf (OR b1 b2) = (OR (dnf_of_nnf b1) (dnf_of_nnf b2))" |
+"dnf_of_nnf (AND b1 b2) = andb (dnf_of_nnf b1) (dnf_of_nnf b2)"
+
+fun no_or :: "pbexp \<Rightarrow> bool" where
+"no_or (VAR x) = True" |
+"no_or (NEG b) = no_or b" |
+"no_or (OR b1 b2) = False" |
+"no_or (AND b1 b2) = (no_or b1 \<and> no_or b2)"
+
+fun is_dnf :: "pbexp \<Rightarrow> bool" where
+"is_dnf (VAR x) = True" |
+"is_dnf (NEG b) = True" |
+"is_dnf (AND b1 b2) = (no_or b1 \<and> no_or b2)" |
+"is_dnf (OR b1 b2) = (is_dnf b1 \<and> is_dnf b2)"
+
+lemma [simp] : "pbval (andb b1 b2) s = pbval (AND b1 b2) s"
+  apply (induction b1 b2 rule: andb.induct)
+  apply (auto)
+  done
+
+lemma "(pbval (dnf_of_nnf b) s = pbval b s)"
+  apply (induction b)
+  apply (auto)
+  done
+
+lemma [simp] : "is_nnf (NEG b) \<Longrightarrow> no_or b"
+  apply (induction b)
+  apply (auto)
+  done
+
+lemma [simp] : "is_dnf b1 \<Longrightarrow> is_dnf b2 \<Longrightarrow> is_dnf (andb b1 b2)"
+  apply (induction b1 b2 rule: andb.induct)
+  apply (auto)
+  done
+
+lemma "(is_nnf b \<Longrightarrow> is_dnf (dnf_of_nnf b))"
+  apply (induction b rule: dnf_of_nnf.induct)
+  apply (auto)
 
 end
+
