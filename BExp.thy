@@ -143,7 +143,7 @@ fun dnf_of_nnf :: "pbexp \<Rightarrow> pbexp" where
 
 fun no_or :: "pbexp \<Rightarrow> bool" where
 "no_or (VAR x) = True" |
-"no_or (NEG b) = no_or b" |
+"no_or (NEG b) = True" |
 "no_or (OR b1 b2) = False" |
 "no_or (AND b1 b2) = (no_or b1 \<and> no_or b2)"
 
@@ -176,6 +176,7 @@ lemma [simp] : "is_dnf b1 \<Longrightarrow> is_dnf b2 \<Longrightarrow> is_dnf (
 lemma "(is_nnf b \<Longrightarrow> is_dnf (dnf_of_nnf b))"
   apply (induction b rule: dnf_of_nnf.induct)
   apply (auto)
+  done
 
 end
 
