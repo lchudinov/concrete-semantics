@@ -29,4 +29,14 @@ lemma "evn n \<Longrightarrow> ev n"
 
 declare ev.intros[simp,intro]
 
+inductive star :: "('a \<Rightarrow> 'a \<Rightarrow> bool) \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" for r where
+refl: "star r x x" |
+step: "r x y \<Longrightarrow> star r y z \<Longrightarrow> star r x z"
+
+lemma star_trans: "star r x y \<Longrightarrow> star r y z \<Longrightarrow> star r x z"
+  apply (induction rule: star.induct)
+  apply (assumption)
+  apply(metis step)
+  done
+
 end
