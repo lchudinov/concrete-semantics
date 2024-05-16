@@ -44,5 +44,15 @@ proof
   hence "a \<notin> f a \<longleftrightarrow> a \<in> f a" by blast
   thus "False" by blast (* thus = then show *)
 qed
-  
+
+lemma fixes a b :: int assumes "b dvd (a+b)" shows "b dvd a"
+proof -
+  have "\<exists>k'. a = b*k'" if asm: "a+b = b*k" for k
+  proof
+    show "a = b*(k-1)" using asm by (simp add:algebra_simps)
+  qed
+  then show ?thesis using assms by(auto simp add: dvd_def) 
+qed
+
+
 
