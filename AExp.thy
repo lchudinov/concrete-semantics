@@ -14,6 +14,16 @@ fun aval :: "aexp \<Rightarrow> state \<Rightarrow> val" where
 
 value "aval (Plus (N 3) (V ''x'')) (\<lambda>x. 0)"
 
+text \<open>A little syntax magic to write larger states compactly:\<close>
+
+definition null_state ("<>") where
+  "null_state \<equiv> \<lambda>x. 0"
+syntax 
+  "_State" :: "updbinds => 'a" ("<_>")
+translations
+  "_State ms" == "_Update <> ms"
+  "_State (_updbinds b bs)" <= "_Update (_State b) bs"
+
 fun asimp_const :: "aexp \<Rightarrow> aexp" where
 "asimp_const (N n) = N n" |
 "asimp_const (V x) = V x" |
