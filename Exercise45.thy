@@ -5,12 +5,12 @@ datatype alpha = a | b
 
 inductive S :: "alpha list \<Rightarrow> bool" where
 S_e: "S []" |
-S_aSb: "S xs \<Longrightarrow> S (y # xs @ [z])" |
+S_aSb: "S xs \<Longrightarrow> S (a # xs @ [b])" |
 S_SS: "S xs \<Longrightarrow> S ys \<Longrightarrow> S (xs @ ys)"
 
 inductive T :: "alpha list \<Rightarrow> bool" where
 T_e: "T []" |
-T_TaTb: "T xs \<Longrightarrow> T ys \<Longrightarrow> T (xs @ [x] @ ys @ [y])"
+T_TaTb: "T xs \<Longrightarrow> T ys \<Longrightarrow> T (xs @ [a] @ ys @ [b])"
 
 lemma [simp]: "T w \<Longrightarrow> S w"
   apply (induction rule: T.induct)
