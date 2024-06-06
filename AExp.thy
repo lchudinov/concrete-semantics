@@ -53,7 +53,7 @@ fun asimp :: "aexp \<Rightarrow> aexp" where
 "asimp (V x) = V x" |
 "asimp (Plus a1 a2) = plus (asimp a1) (asimp a2)"
 
-lemma "aval (asimp a) s = aval a s"
+lemma aval_asimp[simp]: "aval (asimp a) s = aval a s"
   apply (induction a)
   apply (auto simp add: aval_plus)
   done
