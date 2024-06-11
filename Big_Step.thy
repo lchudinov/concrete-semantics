@@ -1,12 +1,14 @@
 theory Big_Step imports Com begin
 
-inductive big_step :: "com \<times> state \<Rightarrow> state \<Rightarrow> bool" (infix "\<Rightarrow>" 55) where
-Skip: "(Skip,s) \<Rightarrow> s" |
+inductive
+  big_step :: "com \<times> state \<Rightarrow> state \<Rightarrow> bool" (infix "\<Rightarrow>" 55)
+where
+Skip: "(SKIP,s) \<Rightarrow> s" |
 Assign: "(x ::= a,s) \<Rightarrow> s(x := aval a s)" |
 Seq: "\<lbrakk> (c1,s1) \<Rightarrow> s2; (c2,s2) \<Rightarrow> s3 \<rbrakk> \<Longrightarrow> (c1;;c2, s1) \<Rightarrow> s3" |
 IfTrue: "\<lbrakk> bval b s; (c1,s) \<Rightarrow> t \<rbrakk> \<Longrightarrow> (IF b THEN c1 ELSE c2, s) \<Rightarrow> t" |
 IfFalse: "\<lbrakk> \<not> bval b s; (c2,s) \<Rightarrow> t \<rbrakk> \<Longrightarrow> (IF b THEN c1 ELSE c2, s) \<Rightarrow> t" |
-WhileFalse: "\<not> bval b s \<Longrightarrow> (WHILE b DO c, s) \<Rightarrow> s" |
+WhileFalse: "\<not> bval b s \<Longrightarrow> (WHILE b DO c,s) \<Rightarrow> s" |
 WhileTrue: "\<lbrakk> bval b s1; (c,s1) \<Rightarrow> s2; (WHILE b DO c, s2) \<Rightarrow> s3 \<rbrakk> \<Longrightarrow> (WHILE b DO c, s1) \<Rightarrow> s3"
 
 schematic_goal ex: "(''x'' ::= N 5;; ''y'' ::= V ''x'', s) \<Rightarrow> ?t"
@@ -64,14 +66,8 @@ proof -
   qed
 qed
 
-(*
-for some reason auto didn't work for the lemma below
-
 lemma assign_simp: "(x ::= a,s) \<Rightarrow> s' \<longleftrightarrow> (s' = s(x := aval a s))"
   by auto
-*)
-
-
 
 lemma Seq_assoc: "(c1;; c2;; c3, s) \<Rightarrow> s' \<longleftrightarrow> (c1;; (c2;; c3), s) \<Rightarrow> s'"
 proof
@@ -118,10 +114,9 @@ lemma sim_relf: "c \<sim> c" by simp
 lemma sim_sym: "(c \<sim> c') = (c' \<sim> c)" by auto
 lemma sim_trans: "c \<sim> c' \<Longrightarrow> c' \<sim> c'' \<Longrightarrow> c \<sim> c''" by auto
 
-(*
+
 theorem big_step_determ: "\<lbrakk> (c,s) \<Rightarrow> t; (c,s) \<Rightarrow> u \<rbrakk> \<Longrightarrow> u = t"
   by (induction arbitrary: u rule: big_step.induct) blast+
-*)
 
 theorem "(c,s) \<Rightarrow> t  \<Longrightarrow>  (c,s) \<Rightarrow> t'  \<Longrightarrow>  t' = t"
 proof (induction arbitrary: t' rule: big_step.induct)
