@@ -108,5 +108,11 @@ apply(induction c)
 apply blast+
 done
 
+lemma final_iff_SKIP: "final (c,s) = (c = SKIP)"
+by (metis SkipE finalD final_def)
+
+lemma big_iff_small_termination:
+  "(\<exists>t. cs \<Rightarrow> t) \<longleftrightarrow> (\<exists>cs'. cs \<rightarrow>* cs' \<and> final cs')"
+by(simp add: big_iff_small final_iff_SKIP)
 
 end
