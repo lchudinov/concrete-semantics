@@ -4,7 +4,7 @@ begin
 subsection "The transition relation"
 
 inductive
-  small_step :: "com * state \<Rightarrow> com * state \<Rightarrow> bool" (infix "\<rightarrow>" 55)
+  small_step :: "com \<times> state \<Rightarrow> com \<times> state \<Rightarrow> bool" (infix "\<rightarrow>" 55)
 where
 Assign:  "(x ::= a, s) \<rightarrow> (SKIP, s(x := aval a s))" |
 
@@ -17,7 +17,7 @@ IfFalse: "\<not> bval b s \<Longrightarrow> (IF b THEN c1 ELSE c2,s) \<rightarro
 While:   "(WHILE b DO c,s) \<rightarrow> (IF b THEN c;; WHILE b DO c ELSE SKIP,s)"
 
 abbreviation
-  small_steps :: "com * state \<Rightarrow> com * state \<Rightarrow> bool" (infix "\<rightarrow>*" 55)
+  small_steps :: "com \<times> state \<Rightarrow> com \<times> state \<Rightarrow> bool" (infix "\<rightarrow>*" 55)
   where "x \<rightarrow>* y == star small_step x y" 
 
 subsection\<open>Executability\<close>
@@ -99,7 +99,7 @@ apply (auto intro: small1_big_continue)
 theorem big_iff_small:  "cs \<Rightarrow> t = cs \<rightarrow>* (SKIP,t)"
   by(metis big_to_small small_to_big)
 
-definition final :: "com * state \<Rightarrow> bool" where
+definition final :: "com \<times> state \<Rightarrow> bool" where
   "final cs \<longleftrightarrow> (\<nexists>cs'. cs \<rightarrow> cs')"
 
 lemma finalD: "final (c,s) \<Longrightarrow> c = SKIP"

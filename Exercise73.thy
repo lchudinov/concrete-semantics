@@ -19,10 +19,6 @@ proof (induction c)
 next
   case (Seq c1 c2)
   then show "deskip (c1;;c2) \<sim> (c1;;c2)" by blast
-next
-  case (Assign x a)
-  
-  
 qed auto+ 
 
 end
