@@ -144,23 +144,50 @@ console.log(`inv_less false`, inv_less(false, i1, i2));
 }
 
 {
-	let x: number = 0;
-	// Some{(x, [0, 0])}
+	// after five steps we have
+
+	let x: number = 0; // Some{(x, [0, 0])}
+	// Some{(x, [0, 1])}
 	while (x < 100) {
-		// Some{(x, [0, 99])}
+		// Some{(x, [0, 0])}
 		x = x + 1;
-		// Some{(x, [1, 100])}
+		// Some{(x, [1, 1])}
 	}
 	// None
 }
 
 {
-	let x: number;
-	// Some{(x, [0, 1])}
+	// it takes a while to reach a least fixpoint  
+	let x: number = 0; // Some{(x, [0, 0])}
+	// Some{(x, [0, 100])}
 	while (x < 100) {
-		// Some{(x, [-Inf, 99])}
+		// Some{(x, [0, 99])}
 		x = x + 1;
-		// Some{(x, [-Inf, 100])}
+		// Some{(x, [1, 100])}
 	}
-	// Some{(x, [100, Inf])}
+	// Some{(x, [100, 100])}
+}
+
+{
+	// after 50 steps
+	let x: number = 0; // Some{(x, [0, 0])}
+	// Some{(x, [0, 16])}
+	while (x > -1) {
+		// Some{(x, [0, 15])}
+		x = x + 1;
+		// Some{(x, [1, 16])}
+	}
+	// None
+}
+
+{
+	// Exercise 13.19: Construct a terminating program where interval analysis does not terminate
+	let x = 0, y = 5; // Some{(x, [0, 0]), (y, [5, 5])}
+	// Some{(x, [0, 0]), (y, [5, 5])} -> // Some{(x, [0, 1]), (y, [4, 5])} -> // Some{(x, [0, 2]), (y, [3, 5])}
+	while (x < y) {
+	// Some{(x, [0, 0]), (y, [5, 5])} -> // Some{(x, [0, 1]), (y, [4, 5])} -> // Some{(x, [0, 2]), (y, [3, 5])}
+		x = x + 1; y = y - 1;
+	// Some{(x, [1, 1]), (y, [4, 4])} -> // Some{(x, [0, 2]), (y, [3, 5])} -> // Some{(x, [0, 3]), (y, [2, 5])}
+	}
+	// None
 }
