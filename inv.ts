@@ -168,6 +168,7 @@ console.log(`inv_less false`, inv_less(false, i1, i2));
 	// Some{(x, [100, 100])}
 }
 
+/*
 {
 	// after 50 steps
 	let x: number = 0; // Some{(x, [0, 0])}
@@ -179,15 +180,22 @@ console.log(`inv_less false`, inv_less(false, i1, i2));
 	}
 	// None
 }
+*/
+
+function widening({l: l1, h: h1}: eint2, {l: l2, h: h2}: eint2): eint2 {
+	const l = (l1 > l2) ? -Infinity : l1;
+	const h = (h1 < h2) ?  Infinity : h1;
+	return {l, h};
+}
 
 {
-	// Exercise 13.19: Construct a terminating program where interval analysis does not terminate
-	let x = 0, y = 5; // Some{(x, [0, 0]), (y, [5, 5])}
-	// Some{(x, [0, 0]), (y, [5, 5])} -> // Some{(x, [0, 1]), (y, [4, 5])} -> // Some{(x, [0, 2]), (y, [3, 5])}
-	while (x < y) {
-	// Some{(x, [0, 0]), (y, [5, 5])} -> // Some{(x, [0, 1]), (y, [4, 5])} -> // Some{(x, [0, 2]), (y, [3, 5])}
-		x = x + 1; y = y - 1;
-	// Some{(x, [1, 1]), (y, [4, 4])} -> // Some{(x, [0, 2]), (y, [3, 5])} -> // Some{(x, [0, 3]), (y, [2, 5])}
-	}
-	// None
+	const a: eint2 = {l: 0, h: 1};
+	const b: eint2 = {l: 0, h: 2};
+	const c: eint2 = {l: 1, h: 2};
+	const d: eint2 = {l: 0, h: 5};
+
+	console.log(`widening(a,b)`, widening(a, b));
+	console.log(`widening(b,a)`, widening(b, a));
+	console.log(`widening(c,d)`, widening(c, d));
+
 }
