@@ -199,3 +199,53 @@ function widening({l: l1, h: h1}: eint2, {l: l2, h: h2}: eint2): eint2 {
 	console.log(`widening(c,d)`, widening(c, d));
 
 }
+
+// widening and narrowing
+{
+	let x: number = 0; // Some{(x, [0, 0])}
+	// Some{(x, [0, 0])}
+	while (x >= -1) {
+		// Some{(x, [0, 0])}
+		x = x + 1;
+		// Some{(x, [1, 1])}
+	}
+	// None
+}
+
+{
+	// after first step with widening
+	let x: number = 0; // Some{(x, [0, 0])}
+	// Some{(x, [0, Infinity])}
+	while (x >= -1) {
+		// Some{(x, [0, 0])}
+		x = x + 1;
+		// Some{(x, [1, 1])}
+	}
+	// None
+}
+
+{
+	// after two more steps we reach the pre-fixpoint
+	// This is very nice because we have actually reached the least fixpoint.
+	let x: number = 0; // Some{(x, [0, 0])}
+	// Some{(x, [0, Infinity])}
+	while (x >= -1) {
+		// Some{(x, [0, Infinity])}
+		x = x + 1;
+		// Some{(x, [1, Infinity])}
+	}
+	// None
+}
+
+{
+	// Now we look at the program where previously we needed O(n) steps to
+	// reach the least fixpoint. Now we reach a pre-fixpoint very quickly:
+	let x: number = 0; // Some{(x, [0, 0])}
+	// Some{(x, [0, Infinity])}
+	while (x < 100) {
+		// Some{(x, [0, Infinity])}
+		x = x + 1;
+		// Some{(x, [1, Infinity])}
+	}
+	// // Some{(x, [100, Infinity])}
+}
